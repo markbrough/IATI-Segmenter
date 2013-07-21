@@ -22,7 +22,7 @@ import os
 
 # FIXME: if there are multiple countries/countries+regions, then don't
 # output to the same file.
-def segment_file(filename):
+def segment_file(prefix, filename):
     print "Segmenting file", filename
     doc=etree.parse(os.path.join(filename))
     countries = set(doc.xpath('//iati-activity/recipient-country/@code'))
@@ -51,42 +51,46 @@ def segment_file(filename):
     activities = doc.xpath('//iati-activity')
 
     for activity in activities:
-        if activity.xpath('recipient-country'):
+        if (activity.xpath('recipient-country')) and (activity.xpath('recipient-country/@code')[0] != ""):
             country = activity.xpath('recipient-country/@code')[0]
             out[country].append(activity)
-        elif activity.xpath('recipient-region'):
+        elif (activity.xpath('recipient-region')) and (activity.xpath('recipient-region/@code')[0] != ""):
             region = activity.xpath('recipient-region/@code')[0]
             out[region].append(activity)
         else:
             # catch activities without a country or region
             # (should not happen, but possible)
             out['NULL'].append(activity)
-            
+
+    # Create metadata file...
+    fieldnames = ['country_code', 'filename', 'package_name']
+    metadata_file = open('data/metadata.csv', 'w')
+    metadata = csv.DictWriter(metadata_file, fieldnames)
+    metadata.writeheader()
 
     for country, data in out.items():
         print "Writing data for", country
         # Check not empty
         if data.xpath('//iati-activity'):
             data = etree.ElementTree(data)
-            data.write('data/'+country+".xml")
+            data.write("data/"+prefix+"-"+country+".xml")
+            metadata.writerow({
+                'country_code':country, 
+                'filename':prefix+"-"+country+'.xml',
+                'package_name': prefix+"-"+country})
     print "Finished writing data, find the files in data/"
 
-    fieldnames = ['country_code', 'filename']
-    metadata_file = open('data/metadata.csv', 'w')
-    metadata = csv.DictWriter(metadata_file, fieldnames)
-    metadata.writeheader()
-    for country in out:
-        metadata.writerow({
-            'country_code':country, 
-            'filename':country+'.xml'})
     metadata_file.close()
 
 if __name__ == '__main__':
-    filenames = sys.argv
-    filenames.pop(0)
+    arguments = sys.argv
+    arguments.pop(0)
+    prefix = arguments[0]
+    arguments.pop(0)
+    filenames = arguments
 
     if not filenames:
         print "No filenames"
     else:
         for filename in filenames:
-            segment_file(filename)
+            segment_file(prefix, filename)
