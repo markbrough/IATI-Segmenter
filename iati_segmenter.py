@@ -36,16 +36,16 @@ def segment_file(prefix, filename):
 
     for country in countries:
         out[country] = etree.Element('iati-activities')
-        for attribute, attribute_value in iatiactivities[0].items():
+        for attribute, attribute_value in iatiactivities.items():
             out[country].set(attribute, attribute_value)
 
     for region in regions:
         out[region] = etree.Element('iati-activities')
-        for attribute, attribute_value in iatiactivities[0].items():
+        for attribute, attribute_value in iatiactivities.items():
             out[region].set(attribute, attribute_value)
 
     out['NULL'] = etree.Element('iati-activities')
-    for attribute, attribute_value in iatiactivities[0].items():
+    for attribute, attribute_value in iatiactivities.items():
         out['NULL'].set(attribute, attribute_value)
 
     activities = doc.xpath('//iati-activity')
