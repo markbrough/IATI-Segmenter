@@ -29,10 +29,14 @@ installation):
         pip install -r requirements.txt
 
 3. Run the script:
-  * `prefix` should be a short word or acronym at the start of your files, e.g. `dfid`, `worldbank`, etc.:
-  * `filename` should be the path to your file
 
         ./iati_segmenter.py [PREFIX] [FILENAME]
+
+  Where:
+
+  * `prefix` is a short word or acronym at the start of your files, e.g. `dfid`, `worldbank`, etc.
+
+  * `filename` is the path to your file
 
 4. The data should be output to `data/`
 
