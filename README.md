@@ -32,7 +32,7 @@ installation):
 
         ./iati_segmenter.py [PREFIX] [FILENAME]
 
-  Where:
+   Where:
 
        * `prefix` is a short word or acronym at the start of your files, e.g. `dfid`, `worldbank`, etc.
 
