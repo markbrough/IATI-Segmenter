@@ -34,9 +34,9 @@ installation):
 
   Where:
 
-   * `prefix` is a short word or acronym at the start of your files, e.g. `dfid`, `worldbank`, etc.
+       * `prefix` is a short word or acronym at the start of your files, e.g. `dfid`, `worldbank`, etc.
 
-   * `filename` is the path to your file
+       * `filename` is the path to your file
 
 4. The data should be output to `data/`
 
