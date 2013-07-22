@@ -35,35 +35,44 @@ def segment_file(prefix, filename):
     iatiactivities = doc.xpath('//iati-activities')[0]
 
     for country in countries:
-        out[country] = etree.Element('iati-activities')
+        out[country] = {
+            'title': prefix.upper() + " Activity file " + country,
+            'data': etree.Element('iati-activities')
+        }
         for attribute, attribute_value in iatiactivities.items():
-            out[country].set(attribute, attribute_value)
+            out[country]['data'].set(attribute, attribute_value)
 
     for region in regions:
-        out[region] = etree.Element('iati-activities')
+        out[region] = {
+            'title': prefix.upper() + " Activity file " + region,
+            'data': etree.Element('iati-activities')
+        }
         for attribute, attribute_value in iatiactivities.items():
-            out[region].set(attribute, attribute_value)
+            out[region]['data'].set(attribute, attribute_value)
 
-    out['NULL'] = etree.Element('iati-activities')
+    out['NULL'] = {
+            'title': prefix.upper() + " Activity file NULL",
+            'data':  etree.Element('iati-activities')
+    }
     for attribute, attribute_value in iatiactivities.items():
-        out['NULL'].set(attribute, attribute_value)
+        out['NULL']['data'].set(attribute, attribute_value)
 
     activities = doc.xpath('//iati-activity')
 
     for activity in activities:
         if (activity.xpath('recipient-country')) and (activity.xpath('recipient-country/@code')[0] != ""):
             country = activity.xpath('recipient-country/@code')[0]
-            out[country].append(activity)
+            out[country]['data'].append(activity)
         elif (activity.xpath('recipient-region')) and (activity.xpath('recipient-region/@code')[0] != ""):
             region = activity.xpath('recipient-region/@code')[0]
-            out[region].append(activity)
+            out[region]['data'].append(activity)
         else:
             # catch activities without a country or region
             # (should not happen, but possible)
-            out['NULL'].append(activity)
+            out['NULL']['data'].append(activity)
 
     # Create metadata file...
-    fieldnames = ['country_code', 'filename', 'package_name']
+    fieldnames = ['country_code', 'filename', 'package_name', 'package_title']
     metadata_file = open('data/metadata.csv', 'w')
     metadata = csv.DictWriter(metadata_file, fieldnames)
     metadata.writeheader()
@@ -71,13 +80,14 @@ def segment_file(prefix, filename):
     for country, data in out.items():
         print "Writing data for", country
         # Check not empty
-        if data.xpath('//iati-activity'):
-            data = etree.ElementTree(data)
-            data.write("data/"+prefix+"-"+country+".xml")
+        if data['data'].xpath('//iati-activity'):
+            d = etree.ElementTree(data['data'])
+            d.write("data/"+prefix+"-"+country+".xml")
             metadata.writerow({
                 'country_code':country, 
                 'filename':prefix+"-"+country+'.xml',
-                'package_name': prefix+"-"+country})
+                'package_name': prefix+"-"+country,
+                'package_title': data['title']})
     print "Finished writing data, find the files in data/"
 
     metadata_file.close()
