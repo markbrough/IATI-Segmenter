@@ -15,7 +15,7 @@
 # GNU Affero General Public License for more details.
 
 from lxml import etree
-import csv
+import unicodecsv
 import sys
 import os
 
@@ -73,7 +73,7 @@ def segment_file(prefix, filename, output_directory):
     # Create metadata file...
     fieldnames = ['country_code', 'filename', 'package_name', 'package_title']
     metadata_file = open(output_directory + 'metadata.csv', 'w')
-    metadata = csv.DictWriter(metadata_file, fieldnames)
+    metadata = unicodecsv.DictWriter(metadata_file, fieldnames)
     metadata.writeheader()
 
     for country, data in out.items():
