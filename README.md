@@ -1,5 +1,7 @@
 # IATI Segmenter
-Takes apart large IATI XML files and outputs one file per country or region. A "NULL" file will be created for activities that don't have a country or region (this shouldn't happen, but it's possible).
+Takes apart large IATI XML files and outputs one file per country or region. A 
+"NULL" file will be created for activities that don't have a country or region 
+(this shouldn't happen, but it's possible).
 
 ## License
 
@@ -18,28 +20,20 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-## How to run the scripts
+## How to segment files
 
-1. Install the dependencies. It's recommended that you use a `virtualenv`. From
-within the relevant folder, run the following commands (all commands assume a Linux
-installation):
+1. Install the module `iatisegmenter`:
 
-        virtualenv ./pyenv
-        source ./pyenv/bin/activate
-        pip install -r requirements.txt
+        pip install iatisegmenter
 
-3. Run the script:
+2. Import the module and then segment a file:
 
-        ./iati_segmenter.py [PREFIX] [FILENAME]
+        iatisegmenter.segment_file([PREFIX], [SOURCE FILENAME], [OUTPUT DIRECTORY] 
 
    Where:
 
-   `prefix` is a short word or acronym at the start of your files, e.g. `dfid`, `worldbank`, etc.
+   `PREFIX` is a short word or acronym at the start of your files, e.g. `dfid`, `worldbank`, etc.
 
-   `filename` is the path to your file
+   `SOURCE FILENAME` is the path to your file
 
-4. The data should be output to `data/`
-
-5. You can also provide multiple files:
-
-        ./iati_segmenter.py [PREFIX] [FILENAME1] [FILENAME2] etc...
+   `OUTPUT DIRECTORY` is the path to the directory where the files should be output
