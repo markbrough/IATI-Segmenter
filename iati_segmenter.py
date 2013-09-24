@@ -16,13 +16,12 @@
 
 from lxml import etree
 import csv
-import lxml
 import sys
 import os
 
 # FIXME: if there are multiple countries/countries+regions, then don't
 # output to the same file.
-def segment_file(prefix, filename):
+def segment_file(prefix, filename, output_directory):
     print "Segmenting file", filename
     doc=etree.parse(os.path.join(filename))
     countries = set(doc.xpath('//iati-activity/recipient-country/@code'))
@@ -73,7 +72,7 @@ def segment_file(prefix, filename):
 
     # Create metadata file...
     fieldnames = ['country_code', 'filename', 'package_name', 'package_title']
-    metadata_file = open('data/metadata.csv', 'w')
+    metadata_file = open(output_directory + 'metadata.csv', 'w')
     metadata = csv.DictWriter(metadata_file, fieldnames)
     metadata.writeheader()
 
@@ -82,13 +81,13 @@ def segment_file(prefix, filename):
         # Check not empty
         if data['data'].xpath('//iati-activity'):
             d = etree.ElementTree(data['data'])
-            d.write("data/"+prefix+"-"+country+".xml")
+            d.write(output_directory+prefix+"-"+country+".xml")
             metadata.writerow({
                 'country_code':country, 
                 'filename':prefix+"-"+country+'.xml',
                 'package_name': prefix+"-"+country,
                 'package_title': data['title']})
-    print "Finished writing data, find the files in data/"
+    print "Finished writing data, find the files in", output_directory
 
     metadata_file.close()
 
@@ -98,9 +97,10 @@ if __name__ == '__main__':
     prefix = arguments[0]
     arguments.pop(0)
     filenames = arguments
+    output_directory = 'data/'
 
     if not filenames:
         print "No filenames"
     else:
         for filename in filenames:
-            segment_file(prefix, filename)
+            segment_file(prefix, filename, output_directory)
