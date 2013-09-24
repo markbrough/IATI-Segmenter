@@ -28,7 +28,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 2. Import the module and then segment a file:
 
-        iatisegmenter.segment_file([PREFIX], [SOURCE FILENAME], [OUTPUT DIRECTORY] 
+        import iatisegmenter
+        iatisegmenter.segment_file([PREFIX], [SOURCE FILENAME], [OUTPUT DIRECTORY])
 
    Where:
 
